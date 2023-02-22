@@ -23,6 +23,14 @@ echo 'bbb' > b
 assert 'merge' "$($CORPUS merge a b)" "$(echo "${FS}a\naaa\n${FS}b\nbbb")"
 teardown
 
+echo "${FS}a\naaa\n${FS}b\nbbb" | $CORPUS split
+[[ -f a ]]
+assert 'split a' $? 0
+[[ -f b ]]
+assert 'split b' $? 0
+assert 'split a contents' "$(cat a)" 'aaa'
+assert 'split b contents' "$(cat b)" 'bbb'
+
 [[ -z "$ERR" ]] && echo "All Tests Pass"
 exit "$ERR"
 

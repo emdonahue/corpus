@@ -22,7 +22,7 @@ case "$CMD" in
 	exit
 	;;
     split) #; Splits apart a merged file stream and writes it to separate files.
-	awk -vFILESEP="$FS" 'substr($0,1,1)==FILESEP {FNAME=substr($0,2)} {print > FNAME}'
+	awk -vFILESEP="$FS" 'substr($0,1,1)==FILESEP {FNAME=substr($0,2); next} {print > FNAME}'
 	;;
     *)
 	if [[ -z "$CMD" ]]; then

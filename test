@@ -1,0 +1,29 @@
+#!/bin/zsh
+
+assert() {
+       if [[ "$2" != "$3" ]]; then
+       	   echo "Failure: $1\n\tExpected: $3\n\tReceived: $2"
+	   ERR=1
+       fi
+}
+
+function teardown() {
+    cd "$DIR"
+    rm -f a b
+}
+
+CORPUS=$(realpath corpus)
+FS=$'\034'
+DIR=$(mktemp -d)
+trap "rm -rf $DIR" EXIT
+cd "$DIR"
+
+echo 'aaa' > a
+echo 'bbb' > b
+assert 'merge' "$($CORPUS merge a b)" "$(echo "${FS}a\naaa\n${FS}b\nbbb")"
+teardown
+
+[[ -z "$ERR" ]] && echo "All Tests Pass"
+exit "$ERR"
+
+

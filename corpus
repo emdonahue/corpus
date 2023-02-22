@@ -1,0 +1,35 @@
+#!/bin/zsh
+
+set -o errexit
+set -o pipefail
+if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi
+
+unset c #Reserved variable for inline comments
+
+FS=$'\034'
+
+CMD="$1"
+[[ $# -ne 0 ]] && shift
+case "$CMD" in
+    --help|-h|help) #[SUBCOMMAND]; Prints help text for SUBCOMMAND. If SUBCOMMAND omitted, prints list of subcommands.
+	[[ $# -eq 0 ]] && echo 'corpus - A suite of tools for cleaning textual corpora. \nUsage: corpus SUBCOMMAND [ARGUMENTS...]\n\nSubcommands:'
+	    sed -nE '/\s*'"$1"'\)\s#/'"${1:+,/^\s*;;\s*$/}"'{s/^[[:space:]]*([-|[:alnum:]]+)\)\s#([^;]*); (.*)/'"${${1-\t}:#$1}"'\1 \2\t\3/p; s/.*(\w+)[-+:]*=\w+ \$\{c#(.*); (.*)\}.*/\t-\1 \2\t\3/p}' "$0"
+	;;
+    merge) #FILE...; Merges FILES together with file separator bytes so that they can be streamed.
+	awk -vFILESEP="$FS" 'BEGINFILE {print FILESEP FILENAME} {print}' "$@"
+	;;
+    mwe) #MWE...; Replace all multiword expressions MWE with single tokens joined by a separator.
+	exit
+	;;
+    split) #; Splits apart a merged file stream and writes it to separate files.
+	awk -vFILESEP="$FS" 'substr($0,1,1)==FILESEP {FNAME=substr($0,2)} {print > FNAME}'
+	;;
+    *)
+	if [[ -z "$CMD" ]]; then
+	    "$0" help
+	else
+	    "$0" help 1>&2
+	    exit 1
+	fi
+	;;
+esac

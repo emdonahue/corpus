@@ -18,8 +18,8 @@ case "$CMD" in
     merge) #FILE...; Merges FILES together with file separator bytes so that they can be streamed.
 	awk -vFILESEP="$FS" 'BEGINFILE {print FILESEP FILENAME} {print}' "$@"
 	;;
-    mwe) #MWE...; Replace all multiword expressions MWE with single tokens joined by a separator.
-	exit
+    mwe) #MWE...; Replace all multiword expressions MWE in the corpus on stdin with single tokens joined by a separator.
+	sed -f <(printf "%s\n" "$@" | sed 's/\//\\\//g;h;s/ /_/g;x;G;s/\n/\//;s/^/s\//;s/$/\//')
 	;;
     split) #; Splits apart a merged file stream and writes it to separate files.
 	awk -vFILESEP="$FS" 'substr($0,1,1)==FILESEP {FNAME=substr($0,2); next} {print > FNAME}'

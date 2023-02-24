@@ -21,7 +21,7 @@ cd "$DIR"
 AHEAD="${FS}a\n"
 BHEAD="${FS}b\n"
 
-assert 'charset' "$($CORPUS charset <(echo "${AHEAD}aba\nab"))" "$(echo "a\t3\nb\t2")"
+assert 'charset' "$($CORPUS charset <(echo "aba\nab"))" "$(echo "\n\t2\na\t3\nb\t2")"
 
 echo 'aaa' > a
 echo 'bbb' > b

@@ -16,4 +16,3 @@ Subcommands:
 ## TODO
 - Make mwe match multiline expressions.
 - Give merge option to split lines to make large token files readable by other line-based tools. Possibly using null bytes to preserve original linebreaks.
-- Make charset print useful ascii number data for nonprinting characters.

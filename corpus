@@ -2,7 +2,6 @@
 
 #TODO Make mwe match multiline expressions.
 #TODO Give merge option to split lines to make large token files readable by other line-based tools. Possibly using null bytes to preserve original linebreaks.
-#TODO Make charset print useful ascii number data for nonprinting characters.
 
 set -o errexit
 set -o pipefail
@@ -22,7 +21,7 @@ case "$CMD" in
 	;;
     
     charset) #[FILE...]; Prints counts of every character used in the corpus. Also counts filename metadata if corpus merged.
-	awk -vOFS='\t' -vRS='(.)' '{c[RT]++} END {asorti(c,ab); for (i in ab) print ab[i],c[ab[i]]}' "$@"
+	awk -vOFS=' ' -vRS='(.)' '{c[RT]++} END {asorti(c,ab); for (i in ab) print ab[i],c[ab[i]]}' "$@" | cat -v
 	;;
     
     merge) #FILE...; Merges FILES together with file separator bytes so that they can be streamed.

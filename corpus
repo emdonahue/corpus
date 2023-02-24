@@ -21,7 +21,7 @@ case "$CMD" in
 	;;
     
     charset) #[FILE...]; Prints counts of every character used in the corpus. Also counts filename metadata if corpus merged.
-	awk -vRS='(.)' 'BEGIN {e["\n"]="\\\\n";e["\t"]="\\\\t";e[" "]="\\\\s";} {c[RT]++} END {asorti(c,ab); for (i in ab) print e[ab[i]] ? e[ab[i]] : ab[i],c[ab[i]]}' "$@" | cat -v
+	awk -l ordchr -vRS='(.)' '{c[RT]++} END {asorti(c,ab); for (i in ab) {if (0 <= ord(ab[i]) && ord(ab[i]) <=32) {printf("$'"'"'\\\\%03d'"'"'",ord(ab[i]))} else {printf(ab[i])}; print " "c[ab[i]]}}' "$@"
 	;;
     
     merge) #FILE...; Merges FILES together with file separator bytes so that they can be streamed.

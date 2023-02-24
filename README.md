@@ -1,5 +1,7 @@
 # corpus
 A suite of text corpus preprocessing tools
+
+** Documentation
 ```
 corpus - A suite of tools for cleaning textual corpora. 
 Usage: corpus SUBCOMMAND [ARGUMENTS...]

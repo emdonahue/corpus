@@ -35,7 +35,7 @@ assert 'split a contents' "$(cat a)" 'aaa'
 assert 'split b contents' "$(cat b)" 'bbb'
 teardown
 
-assert 'mwe' "$($CORPUS mwe "a b" "d / e" < <(echo "${FS}a b\na b a b c d / e"))" "$(echo "${FS}a b\na_b a_b c d_/_e")"
+assert 'mwe' "$($CORPUS mwe "a b" "d / e" < <(echo "${FS}a b\na b a  b c d / e"))" "$(echo "${FS}a b\na_b a_b c d_/_e")"
 
 [[ -z "$ERR" ]] && echo "All Tests Pass"
 exit "$ERR"

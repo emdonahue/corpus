@@ -22,7 +22,7 @@ case "$CMD" in
 	awk -vFILESEP="$FS" 'BEGINFILE {print FILESEP FILENAME} {print}' "$@"
 	;;
     mwe) #MWE...; Replace all multiword expressions MWE in the corpus on stdin with single tokens joined by a separator.
-	sed -f <(printf "%s\n" "$@" | sed 'h;s/ /_/g;x;G;s/\n/'$US'/;s|^|/^'$FS'/! s'$US'|;s|$|'$US'g|')
+	sed -f <(printf "%s\n" "$@" | sed -E 'h;s/\s+/_/g;x;s/\s+/[[:space:]]\\+/g;G;s/\n/'$US'/;s|^|/^'$FS'/! s'$US'|;s|$|'$US'g|')
 	;;
     split) #; Splits apart a merged file stream and writes it to separate files.
 	awk -vFILESEP="$FS" 'substr($0,1,1)==FILESEP {FNAME=substr($0,2); next} {print > FNAME}'

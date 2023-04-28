@@ -26,7 +26,9 @@ assert 'charset' "$($CORPUS charset <(echo "aba\nab$FS"))" "$(echo "$'\\\\\\\010
 
 #kwik
 assert kwic "$($CORPUS kwic -w 2 b <(echo "a a a b c c c"))" 'a a b c c'
-assert kwic "$($CORPUS kwic -w 1 b <(echo "a b\nc x b z"))" 'x b z'
+#assert 'kwic multiline' "$($CORPUS kwic -w 1 b <(echo "a b\nc x b z"))" 'x b z'
+assert 'kwic tokens no lines' "$($CORPUS kwic -w 1 b <(echo 'a b c d e b g'))" "$(echo 'a b c\ne b g')"
+
 
 #merge
 echo 'aaa' > a

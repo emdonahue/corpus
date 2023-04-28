@@ -20,8 +20,13 @@ case "$CMD" in
 	sed -nE '/\s*'"$1"'\)\s#/'"${1:+,/^\s*;;\s*$/}"'{s/^[[:space:]]*([-|[:alnum:]]+)\)\s#([^;]*); (.*)/'"${${1-\t}:#$1}"'\1 \2\t\3/p; s/.*(\w+)[-+:]*=\w+ \$\{c#(.*); (.*)\}.*/\t-\1 \2\t\3/p}' "$0"
 	;;
     
-    charset) #[FILE...]; Prints counts of every character used in the corpus. Also counts filename metadata if corpus merged.
+    charset) #[FILE...]; Prints counts of every character used in the corpus, substituting ASCII octal codes for control characters. Also counts filename metadata if corpus merged.
 	awk -l ordchr -vRS='(.)' '{c[RT]++} END {asorti(c,ab); for (i in ab) {if (0 <= ord(ab[i]) && ord(ab[i]) <=32) {printf("$'"'"'\\\\%03d'"'"'",ord(ab[i]))} else {printf(ab[i])}; print " "c[ab[i]]}}' "$@"
+	;;
+
+    kwic) #KEYWORD [FILE...]; Keywords in context. Print all windows of which KEYWORD falls in the center.
+	zparseopts -F -D w:=WINDOWSIZE ${c#WINDOWSIZE; Defines the window to be 2*WINDOWSIZE+1 words, centered on KEYWORD. Default is 10.}
+	awk -vKEYWORD="$1" -vWINDOW="${WINDOWSIZE[2]:-10}" -v'RS=[[:space:][:cntrl:]]+' 'BEGIN {FULLWINDOW=2*WINDOW+1} $1 {ctx[idx++]=$1; idx%=FULLWINDOW; if (ctx[idx+WINDOW%FULLWINDOW]==KEYWORD) for (i=0;i<FULLWINDOW;i++) printf("%s%s",ctx[(idx+i)%FULLWINDOW],i==FULLWINDOW-1?"\n":" ")} RT=="\n" {delete ctx; idx=0}' "${@:2}"
 	;;
     
     merge) #FILE...; Merges FILES together with file separator bytes so that they can be streamed.

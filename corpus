@@ -42,6 +42,14 @@ case "$CMD" in
     split) #; Splits apart a merged file stream and writes it to separate files.
 	awk -vFILESEP="$FS" 'substr($0,1,1)==FILESEP {FNAME=substr($0,2); next} {print > FNAME}'
 	;;
+
+    tokens) #[FILE...]; Prints list of whitespace-separated tokens in the corpus.
+	tr -s '[[:space:]]' '\n' < "${@:/dev/stdin}" | grep -v '^$'
+	;;
+
+    types) #[FILE...]; Prints list of unique token types in the corpus.
+	"$0" tokens | sort -u
+	;;
     
     *)
 	if [[ -z "$CMD" ]]; then

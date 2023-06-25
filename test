@@ -48,6 +48,10 @@ assert 'split a contents' "$(cat a)" 'aaa'
 assert 'split b contents' "$(cat b)" 'bbb'
 teardown
 
+#stopwords
+#types
+assert 'types' "$(echo 'a\nb\nc' | $CORPUS stopwords <(echo 'a\nc'))" 'b'
+
 #tokens
 assert 'tokens' "$(echo 'a b c' | $CORPUS tokens)" "$(echo 'a\nb\nc')"
 

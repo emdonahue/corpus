@@ -43,6 +43,10 @@ case "$CMD" in
 	awk -vFILESEP="$FS" 'substr($0,1,1)==FILESEP {FNAME=substr($0,2); next} {print > FNAME}'
 	;;
 
+    stopwords) #STOPWORDLIST FILE...; Removes stop words in STOPWORDLIST from tokenized FILE...
+	grep -vFxf "$@"
+	;;
+    
     tokens) #[FILE...]; Prints list of whitespace-separated tokens in the corpus.
 	tr -s '[[:space:]]' '\n' < "${@:-/dev/stdin}" | grep -v '^$'
 	;;

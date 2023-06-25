@@ -13,6 +13,7 @@ Subcommands:
 	merge FILE...	Merges FILES together with file separator bytes so that they can be streamed.
 	mwe MWE...	Replace all multiword expressions MWE in the corpus on stdin with single tokens joined by a separator.
 	split 	Splits apart a merged file stream and writes it to separate files.
+	stopwords STOPWORDLIST FILE...	Removes stop words in STOPWORDLIST from tokenized FILE...
 	tokens [FILE...]	Prints list of whitespace-separated tokens in the corpus.
 	types [FILE...]	Prints list of unique token types in the corpus.
 ```

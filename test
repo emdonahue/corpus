@@ -29,7 +29,6 @@ assert kwic "$($CORPUS kwic -w 2 b <(echo "a a a b c c c"))" 'a a b c c'
 #assert 'kwic multiline' "$($CORPUS kwic -w 1 b <(echo "a b\nc x b z"))" 'x b z'
 assert 'kwic tokens no lines' "$($CORPUS kwic -w 1 b <(echo 'a b c d e b g'))" "$(echo 'a b c\ne b g')"
 
-
 #merge
 echo 'aaa' > a
 echo 'bbb' > b
@@ -48,6 +47,12 @@ assert 'split b' $? 0
 assert 'split a contents' "$(cat a)" 'aaa'
 assert 'split b contents' "$(cat b)" 'bbb'
 teardown
+
+#tokens
+assert 'tokens' "$(echo 'a b c' | $CORPUS tokens)" "$(echo 'a\nb\nc')"
+
+#types
+assert 'types' "$(echo 'c a b b c' | $CORPUS types)" "$(echo 'a\nb\nc')"
 
 [[ -z "$ERR" ]] && echo "All Tests Pass"
 exit "$ERR"

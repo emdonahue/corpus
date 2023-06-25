@@ -44,7 +44,7 @@ case "$CMD" in
 	;;
 
     tokens) #[FILE...]; Prints list of whitespace-separated tokens in the corpus.
-	tr -s '[[:space:]]' '\n' < "${@:/dev/stdin}" | grep -v '^$'
+	tr -s '[[:space:]]' '\n' < "${@:-/dev/stdin}" | grep -v '^$'
 	;;
 
     types) #[FILE...]; Prints list of unique token types in the corpus.

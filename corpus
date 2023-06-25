@@ -25,6 +25,10 @@ case "$CMD" in
 	awk -l ordchr -vRS='(.)' '{c[RT]++} END {asorti(c,ab); for (i in ab) {if (0 <= ord(ab[i]) && ord(ab[i]) <=32) {printf("$'"'"'\\\\%03d'"'"'",ord(ab[i]))} else {printf(ab[i])}; print " "c[ab[i]]}}' "$@"
 	;;
 
+    detokenize) #[FILE...]; Compresses a list of tokens back into lines of text. Currently ignores linebreaks and creates one continuous stream of tokens.
+	awk 'NR!=1 {printf(" ")} {printf($1)}' "$@"
+	;;
+
     kwic) #KEYWORD [FILE...]; Keywords in context. Print all windows of which KEYWORD falls in the center.
 	zparseopts -F -D w:=WINDOWSIZE ${c#WINDOWSIZE; Defines the window to be 2*WINDOWSIZE+1 words, centered on KEYWORD. Default is 10.}
 	    cat "${@:2}" | tr -s '[[:space:]]' '\n' | grep -xC "${WINDOWSIZE[2]:-10}" --group-separator="$GS" "$1" | tr '\n'"$GS" ' \n' | sed -E 's/^ | $//g'

@@ -54,6 +54,7 @@ assert 'types' "$(echo 'a\nb\nc' | $CORPUS stopwords <(echo 'a\nc'))" 'b'
 
 #tokens
 assert 'tokens' "$(echo 'a b c' | $CORPUS tokens)" "$(echo 'a\nb\nc')"
+assert 'detokenize' "$(echo 'a b c' | $CORPUS tokens | $CORPUS detokenize)" "$(echo 'a b c')"
 
 #types
 assert 'types' "$(echo 'c a b b c' | $CORPUS types)" "$(echo 'a\nb\nc')"

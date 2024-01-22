@@ -31,8 +31,12 @@ case "$CMD" in
 
     kwic) #KEYWORD [FILE...]; Keywords in context. Print all windows of which KEYWORD falls in the center.
 	zparseopts -F -D w:=WINDOWSIZE ${c#WINDOWSIZE; Defines the window to be 2*WINDOWSIZE+1 words, centered on KEYWORD. Default is 10.}
-	    cat "${@:2}" | tr -s '[[:space:]]' '\n' | grep -xC "${WINDOWSIZE[2]:-10}" --group-separator="$GS" "$1" | tr '\n'"$GS" ' \n' | sed -E 's/^ | $//g'
-	    #handles multiline resets but currently misses keywords in first or last segment of line. #awk -vKEYWORD="$1" -vWINDOW="${WINDOWSIZE[2]:-10}" -v'RS=[[:space:][:cntrl:]]+' 'BEGIN {FULLWINDOW=2*WINDOW+1} $1 {if (KEYWORD==$1) ; ctx[idx++]=$1; idx%=FULLWINDOW; if (ctx[idx+WINDOW%FULLWINDOW]==KEYWORD) for (i=0;i<FULLWINDOW;i++) printf("%s%s",ctx[(idx+i)%FULLWINDOW],i==FULLWINDOW-1?"\n":" ")} RT=="\n" {delete ctx; idx=0}' "${@:2}"
+	cat "${@:2}" | tr -s '[[:space:]]' '\n' | grep -xC "${WINDOWSIZE[2]:-10}" --group-separator="$GS" "$1" | tr '\n'"$GS" ' \n' | sed -E 's/^ | $//g'
+	#handles multiline resets but currently misses keywords in first or last segment of line. #awk -vKEYWORD="$1" -vWINDOW="${WINDOWSIZE[2]:-10}" -v'RS=[[:space:][:cntrl:]]+' 'BEGIN {FULLWINDOW=2*WINDOW+1} $1 {if (KEYWORD==$1) ; ctx[idx++]=$1; idx%=FULLWINDOW; if (ctx[idx+WINDOW%FULLWINDOW]==KEYWORD) for (i=0;i<FULLWINDOW;i++) printf("%s%s",ctx[(idx+i)%FULLWINDOW],i==FULLWINDOW-1?"\n":" ")} RT=="\n" {delete ctx; idx=0}' "${@:2}"
+	;;
+
+    mangle) #UNIGRAM [BIGRAM [WINDOW=1]]; Mangles all unigrams if BIGRAM not supplied, otherwise all bigrams formed from UNIGRAM and BIGRAM within WINDOW of each other in a line-separated TOKENS file.
+	awk -vU="$1" -vB="$2" -vW="${3:-1}" '{if (words[0]) print words[0]; for (i=0;i<W-1;i++) words[i]=words[i+1]; if ($0==U || $0==B) {words[W-1]=$0 mangle++} else words[W-1]=$0} END {for (i=0;i<W;i++) print words[i]}'
 	;;
     
     merge) #FILE...; Merges FILES together with file separator bytes so that they can be streamed.

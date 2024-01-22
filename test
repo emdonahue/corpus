@@ -30,9 +30,12 @@ assert kwic "$($CORPUS kwic -w 2 b <(echo "a a a b c c c"))" 'a a b c c'
 assert 'kwic tokens no lines' "$($CORPUS kwic -w 1 b <(echo 'a b c d e b g'))" "$(echo 'a b c\ne b g')"
 
 #mangle2
-assert 'mangle2 single bigram' "$(echo 'a\nb' | $CORPUS mangle2 a b)" "$(echo 'a0\nb1')"
-assert 'mangle2 other words left alone' "$(echo 'a\nb\nc\nd' | $CORPUS mangle2 b c)" "$(echo 'a\nb0\nc1\nd')"
-assert 'mangle2 larger window' "$(echo 'a\nb\nc\nd' | $CORPUS mangle2 a d 3)" "$(echo 'a0\nb\nc\nd1')"
+assert 'mangle single unigram' "$(echo 'a' | $CORPUS mangle a)" "$(echo 'a0')"
+assert 'mangle unigram ignores others' "$(echo 'a\nb\nc' | $CORPUS mangle b)" "$(echo 'a\nb0\nc')"
+assert 'mangle unigram multiple' "$(echo 'a\nb\nc\nb\nd' | $CORPUS mangle b)" "$(echo 'a\nb0\nc\nb1\nd')"
+assert 'mangle single bigram' "$(echo 'a\nb' | $CORPUS mangle a b)" "$(echo 'a0\nb1')"
+assert 'mangle other words left alone' "$(echo 'a\nb\nc\nd' | $CORPUS mangle b c)" "$(echo 'a\nb0\nc1\nd')"
+assert 'mangle larger window' "$(echo 'a\nb\nc\nd' | $CORPUS mangle a d 3)" "$(echo 'a0\nb\nc\nd1')"
 
 #merge
 echo 'aaa' > a

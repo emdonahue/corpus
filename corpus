@@ -35,8 +35,8 @@ case "$CMD" in
 	#handles multiline resets but currently misses keywords in first or last segment of line. #awk -vKEYWORD="$1" -vWINDOW="${WINDOWSIZE[2]:-10}" -v'RS=[[:space:][:cntrl:]]+' 'BEGIN {FULLWINDOW=2*WINDOW+1} $1 {if (KEYWORD==$1) ; ctx[idx++]=$1; idx%=FULLWINDOW; if (ctx[idx+WINDOW%FULLWINDOW]==KEYWORD) for (i=0;i<FULLWINDOW;i++) printf("%s%s",ctx[(idx+i)%FULLWINDOW],i==FULLWINDOW-1?"\n":" ")} RT=="\n" {delete ctx; idx=0}' "${@:2}"
 	;;
 
-    mangle2) #UNIGRAM [BIGRAM [WINDOW=1]]; Mangles all unigrams if BIGRAM not supplied, otherwise all bigrams formed from UNIGRAM and BIGRAM within WINDOW of each other in a line-separated TOKENS file.
-	awk -vU="$1" -vB="$2" -vW="${3:-1}" '{premangle=""; if ($0==U) for (i=0;i<W;i++) {if (words[i]==B) {words[i]=words[i] mangle++; premangle=mangle++}} else if ($0==B) for (i=0;i<W;i++) {if (words[i]==U) {words[i]=words[i] mangle++;  premangle=mangle++}}; if (words[0]) print words[0]; for (i=0;i<W-1;i++) words[i]=words[i+1]; words[W-1]=$0 premangle} END {for (i=0;i<W;i++) if (words[i]) print words[i]}'
+    mangle) #UNIGRAM [BIGRAM [WINDOW=1]]; Mangles all UNIGRAM if BIGRAM not supplied, otherwise all bigrams formed from UNIGRAM and BIGRAM within WINDOW of each other in a line-separated TOKENS file.
+	awk -vU="$1" -vB="$2" -vW="${3:-1}" '{premangle=""; if ($0==U) {if (!B) {premangle=mangle++} else {for (i=0;i<W;i++) {if (words[i]==B) {words[i]=words[i] mangle++; premangle=mangle++}}}} else if ($0==B) for (i=0;i<W;i++) {if (words[i]==U) {words[i]=words[i] mangle++;  premangle=mangle++}}; if (words[0]) print words[0]; for (i=0;i<W-1;i++) words[i]=words[i+1]; words[W-1]=$0 premangle} END {for (i=0;i<W;i++) if (words[i]) print words[i]}'
 
 	#{words[W-1]=$0 mangle++} else words[W-1]=$0
 	;;
